@@ -1,0 +1,21 @@
+{
+  "name": "aibox",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "istanbul cover tape test/back/*.js && istanbul check-coverage --statement 100"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "istanbul": "^0.4.0",
+    "nodemon": "^1.7.1",
+    "pre-commit": "^1.1.1",
+    "shot": "^1.7.0",
+    "tape": "^4.2.1"
+  },
+  "pre-commit": [
+    "test"
+  ]
+}
