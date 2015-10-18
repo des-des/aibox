@@ -17,5 +17,8 @@
   },
   "pre-commit": [
     "test"
-  ]
+  ],
+  "dependencies": {
+    "redis": "^2.2.4"
+  }
 }
