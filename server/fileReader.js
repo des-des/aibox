@@ -1,6 +1,5 @@
 fs = require('fs');
 
-
 function loadFiles(callback) {
   var loadRequest = [
     makeFileRequestFor('index.html'),

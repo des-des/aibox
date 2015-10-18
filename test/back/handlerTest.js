@@ -7,10 +7,7 @@ var fileReader = require('../../server/fileReader.js');
 var fileLoader = fileReader.loadFilesTo;
 var fileRequestBuilder = fileReader.makeFileRequestFor;
 
-
-console.log('WOAH')
 fileReader.loadFiles(function(fileData) {
-  console.log('WOAH THERE')
   handler.setFileData(fileData);
   var testHandlerResponse = function(request, responseTest) {
     shot.inject(handler.handler, request, function(response) {
@@ -22,6 +19,14 @@ fileReader.loadFiles(function(fileData) {
     var getRequest = {
       url: requestUrl,
       method: 'GET'
+    };
+    testHandlerResponse(getRequest, responseTest);
+  }
+
+  var testHandlerPostResponse = function(requestUrl, responseTest) {
+    var getRequest = {
+      url: requestUrl,
+      method: 'POST'
     };
     testHandlerResponse(getRequest, responseTest);
   }
@@ -51,11 +56,14 @@ fileReader.loadFiles(function(fileData) {
   testHandlerGetResponse('/woah/', createStatusCodeTest(404));
   testHandlerGetResponse('?', createStatusCodeTest(404));
   testHandlerGetResponse('/public/notHere.js', createStatusCodeTest(404));
-  testHandlerGetResponse('/data/nowhere', createStatusCodeTest(404));
   testHandlerGetResponse('/auth/secret.html', createStatusCodeTest(404));
   testHandlerGetResponse('/public/index.html',
     createResponseTest(fileData['index.html'].toString(), 200));
 
+  testHandlerGetResponse('/data/nowhere', createStatusCodeTest(404));
+  testHandlerPostResponse('/data/newuser', createStatusCodeTest(200));
+  testHandlerPostResponse('/data/newusers', createStatusCodeTest(404));
+  testHandlerGetResponse('/data/newusers', createStatusCodeTest(404));
 
   test('checking file loader can handle bad file name', function(tester) {
     fileLoader({}, [fileRequestBuilder('main.html')], function(badFiles) {

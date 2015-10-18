@@ -6,25 +6,26 @@ function setFileData(data) {
   fileData = data;
 }
 
-var handler = function(request, response) {
-  console.log(request.url)
+function handler(request, response) {
+  console.log(request.url);
   var tokenisedUrl = tokeniseRequestUrl(request);
   var urlRoot = tokenisedUrl[0];
   if (urlRoot === 'public') {
-    handlerPublicUrl(request, response)
+    handlerPublicRequest(request, response)
+  } else if (urlRoot === 'data') {
+    handleDataRequest(request, response);
   } else {
     serve404(response);
   }
 }
 
-var tokeniseRequestUrl = function(request) {
-  var tokenisedUrl = request.url.split('/');
-  return tokenisedUrl[0].length ? tokenisedUrl : tokenisedUrl.slice(1);
-}
+////////////////////////////////////////////////////////////////////////////////
+//                             PUBLIC REQUEST HANDLER                         //
+////////////////////////////////////////////////////////////////////////////////
 
-var handlerPublicUrl = function(request, response) {
-  var tokenisedUrl = tokeniseRequestUrl(request);
-  var requestedFileType, dotsArray;
+var handlerPublicRequest = function(request, response) {
+  var tokenisedUrl = tokeniseRequestUrl(request)
+    , requestedFileType;
   var requestedFileData = tokenisedUrl.length === 2 &&
     fileData[tokenisedUrl[1]];
   if (requestedFileData) {
@@ -35,26 +36,63 @@ var handlerPublicUrl = function(request, response) {
   }
 }
 
-var getTypeFromName = function(name) {
+////////////////////////////////////////////////////////////////////////////////
+//                              DATA REQUEST HANDLER                          //
+////////////////////////////////////////////////////////////////////////////////
+
+function handleDataRequest(request, response) {
+  var requestMethod = request.method;
+  if (requestMethod === 'POST') {
+    handleDataPostRequest(request, response);
+  } else {
+    serve404(response);
+  }
+}
+
+function handleDataPostRequest(request, response) {
+  var tokenisedUrl = tokeniseRequestUrl(request);
+  var postTarget = tokenisedUrl[1];
+  if (postTarget === 'newuser') {
+    sendResponse(response, 'text/plain', 200, 'Yo!');
+  } else {
+    serve404(response);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//                                     HELPERS                                //
+////////////////////////////////////////////////////////////////////////////////
+
+function tokeniseRequestUrl(request) {
+  var tokenisedUrl = request.url.split('/');
+  return tokenisedUrl[0].length ? tokenisedUrl : tokenisedUrl.slice(1);
+}
+
+function getTypeFromName(name) {
   var dots = name.split('.');
   return dots[dots.length-1];
 }
 
-var sendResponse = function(response, contentType, statusCode, responseData) {
-  writeHeadTo(response, 'text/html', 200);
+function sendResponse(response, contentType, statusCode, responseData) {
+  writeHeadTo(response, contentType, 200);
   response.end(responseData);
 }
 
-var writeHeadTo = function(response, contentType, statusCode) {
+function writeHeadTo(response, contentType, statusCode) {
   response.writeHead(statusCode, {
     'contentType' : contentType
   });
 }
 
-var serve404 = function(response) {
+function serve404(response) {
   response.writeHead(404);
   response.end();
 }
+
+////////////////////////////////////////////////////////////////////////////////
+//                                    EXPORTS                                 //
+////////////////////////////////////////////////////////////////////////////////
+
 
 module.exports = {
   handler: handler,
