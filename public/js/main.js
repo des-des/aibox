@@ -11,8 +11,9 @@ function signupSubmit(event) {
 
   event.preventDefault();
 
-  sendCreateUserRequest(username, password, function() {
+  sendCreateUserRequest(username, password, function(postNewUserRequest) {
     console.log('account creation success');
+    console.log(postNewUserRequest.responseText);
   });
 }
 
@@ -36,7 +37,7 @@ function postNewUserResponseHandler(postNewUserRequest, callback) {
   if (responseReadyState === 4) {
     responseStatusCode = postNewUserRequest.status;
     if (responseStatusCode === 200) {
-      callback();
+      callback(postNewUserRequest);
     } else {
       logRequestError(postNewUserRequest, 'New user');
     }

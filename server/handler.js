@@ -1,5 +1,7 @@
 var fs = require('fs');
 
+var authenticator = require('./authenticator.js');
+
 var fileData;
 
 function setFileData(data) {
@@ -20,7 +22,7 @@ function handler(request, response) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//                             PUBLIC REQUEST HANDLER                         //
+//                          PUBLIC REQUEST HANDLER                            //
 ////////////////////////////////////////////////////////////////////////////////
 
 var handlerPublicRequest = function(request, response) {
@@ -53,15 +55,44 @@ function handleDataPostRequest(request, response) {
   var tokenisedUrl = tokeniseRequestUrl(request);
   var postTarget = tokenisedUrl[1];
   if (postTarget === 'newuser') {
-    sendResponse(response, 'text/plain', 200, 'Yo!');
+    handleNewUserRequest(request, response);
   } else {
     serve404(response);
   }
 }
 
+function handleNewUserRequest(request, response) {
+  var userData, name, pass;
+  getRequestBody(request, function(body) {
+    userData = JSON.parse(body);
+    name = userData.username;
+    pass = userData.password;
+    authenticator.createNewUser(name, pass, function(reply) {
+        if (reply) {
+          writeHeadTo(response, 'text/plain', 200);
+          response.end('success!');
+        } else {
+          writeHeadTo(response, 'text/plain', 200);
+          response.end('nah m8');
+        }
+    });
+  });
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////
 //                                     HELPERS                                //
 ////////////////////////////////////////////////////////////////////////////////
+
+function getRequestBody(request, callback) {
+  var body = '';
+  request.on('data', function(chunk) {
+    body += chunk;
+  });
+  request.on('end', function() {
+    callback(body);
+  });
+}
 
 function tokeniseRequestUrl(request) {
   var tokenisedUrl = request.url.split('/');
@@ -85,6 +116,7 @@ function writeHeadTo(response, contentType, statusCode) {
 }
 
 function serve404(response) {
+  console.log('serving 404');
   response.writeHead(404);
   response.end();
 }

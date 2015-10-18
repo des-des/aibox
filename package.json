@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "istanbul cover tape test/back/*.js && istanbul check-coverage --statement 100"
+    "test": "istanbul cover tape test/back/testMain.js && istanbul check-coverage --statement 100"
   },
   "author": "",
   "license": "ISC",
@@ -19,6 +19,7 @@
     "test"
   ],
   "dependencies": {
+    "bcrypt": "^0.8.5",
     "redis": "^2.2.4"
   }
 }

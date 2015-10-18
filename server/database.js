@@ -19,7 +19,6 @@ var createCaller = function () {
     middlewareStore.push(fn);
     return this;
   };
-
   return caller;
 };
 
@@ -57,10 +56,20 @@ function checkUserExists(username, callback) {
   });
 }
 
-function deleteUser(username, callback) {
-  client.DEL(createUserKeyFrom(username), function(err, reply) {
+function getHash(username, callback) {
+  client.GET(createUserKeyFrom(username), function(err, reply) {
     callback(reply);
   });
+}
+
+function deleteUser(username, callback) {
+  client.DEL(createUserKeyFrom(username), function(err, reply) {
+    callback && callback(reply);
+  });
+}
+
+function flush() {
+  client.FLUSHDB();
 }
 
 module.exports = {
@@ -68,5 +77,7 @@ module.exports = {
   startDB: startDB,
   createCaller: createCaller,
   putUser: putUser,
-  deleteUser: deleteUser
+  deleteUser: deleteUser,
+  getHash: getHash,
+  flush: flush
 };
