@@ -1,56 +1,13 @@
 var fs = require('fs');
 
-var fileData = {};
-var server;
-var port = 4000;
+var fileData;
 
-var makeFileRequestFrom = function(filePath) {
-  var fileType = filePath.split('.')[1];
-  return {
-    fileKey: filePath,
-    filePath: __dirname + '/../public/' + fileType + '/' + filePath
-  }
-}
-
-var LoadFilesTo = function(files, loadRequests, callback) {
-  var loaded = 0;
-  loadRequests.forEach(function(loadRequest) {
-    fs.readFile(loadRequest.filePath, function(err, fileData) {
-      putFile(loadRequest, files, err, fileData);
-    });
-  });
-
-  function putFile(loadRequest, files, err, fileData) {
-    if (!err) {
-      files[loadRequest.fileKey] = fileData;
-      callbackIfFinished();
-    } else {
-      console.log(err);
-      callbackIfFinished();
-    }
-  };
-
-  var callbackIfFinished = function() {
-    if (callback) {
-      loaded += 1;
-      if (loaded === loadRequests.length) {
-        callback(files);
-      }
-    };
-  }
-}
-
-var readFiles = function(callback) {
-  LoadFilesTo(fileData, [
-    makeFileRequestFrom('index.html'),
-    makeFileRequestFrom('custom.css'),
-    makeFileRequestFrom('main.js'),
-  ], callback);
+function setFileData(data) {
+  fileData = data;
 }
 
 var handler = function(request, response) {
-  console.log('sup yo')
-  console.log(request.url);
+  console.log(request.url)
   var tokenisedUrl = tokeniseRequestUrl(request);
   var urlRoot = tokenisedUrl[0];
   if (urlRoot === 'public') {
@@ -66,7 +23,6 @@ var tokeniseRequestUrl = function(request) {
 }
 
 var handlerPublicUrl = function(request, response) {
-  console.log('sup')
   var tokenisedUrl = tokeniseRequestUrl(request);
   var requestedFileType, dotsArray;
   var requestedFileData = tokenisedUrl.length === 2 &&
@@ -102,8 +58,5 @@ var serve404 = function(response) {
 
 module.exports = {
   handler: handler,
-  LoadFilesTo: LoadFilesTo,
-  readFiles: readFiles,
-  buildFileRequest: makeFileRequestFrom,
-  readFiles: readFiles
-}
+  setFileData: setFileData
+};

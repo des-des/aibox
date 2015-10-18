@@ -1,9 +1,11 @@
 var http = require('http');
 
 var handler = require('./handler.js');
-var port = 4000;
+var fileReader = require('./fileReader.js');
+var port = process.env.port || 4000;
 
-handler.readFiles(function(){
+fileReader.loadFiles(function(fileData){
+  handler.setFileData(fileData);
   server = http.createServer(handler.handler);
   server.listen(port, function() {
     console.log('server is listening on port ' + port);

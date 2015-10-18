@@ -2,13 +2,16 @@ var test = require('tape');
 var shot = require('shot');
 var fs = require('fs');
 
-var index = fs.readFileSync(__dirname + '/../../public/html/index.html').toString();
-
 var handler = require('../../server/handler.js');
+var fileReader = require('../../server/fileReader.js');
+var fileLoader = fileReader.loadFilesTo;
+var fileRequestBuilder = fileReader.makeFileRequestFor;
 
-handler.readFiles(function(fileData) {
-  console.log(fileData);
 
+console.log('WOAH')
+fileReader.loadFiles(function(fileData) {
+  console.log('WOAH THERE')
+  handler.setFileData(fileData);
   var testHandlerResponse = function(request, responseTest) {
     shot.inject(handler.handler, request, function(response) {
       responseTest(request, response);
@@ -53,13 +56,28 @@ handler.readFiles(function(fileData) {
   testHandlerGetResponse('/public/index.html',
     createResponseTest(fileData['index.html'].toString(), 200));
 
-  var fileLoader = handler.LoadFilesTo;
 
   test('checking file loader can handle bad file name', function(tester) {
-    var badFiles = {};
-    fileLoader(badFiles, [handler.buildFileRequest('main.html')], function(badFiles) {
-      tester.equal(Object.keys(badFiles).length, 0, 'Yo');
-      tester.end();
+    fileLoader({}, [fileRequestBuilder('main.html')], function(badFiles) {
+      badFilesTest(badFiles, tester);
     });
   });
+
+  test('checking file loader has correct keys in output', function(tester) {
+    var expectedFileKeys = [
+      'index.html',
+      'custom.css',
+      'main.js'
+    ];
+    expectedFileKeys.forEach(function(fileKey) {
+      tester.ok(fileData[fileKey]);
+    });
+    tester.equal(Object.keys(fileData).length, expectedFileKeys.length);
+    tester.end();
+  });
+
+  function badFilesTest(badFiles, tester) {
+    tester.equal(Object.keys(badFiles).length, 0, 'Yo');
+    tester.end();
+  };
 });
