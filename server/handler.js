@@ -27,19 +27,21 @@ function handler(request, response) {
 
 var handlerPublicRequest = function(request, response) {
   var tokenisedUrl = tokeniseRequestUrl(request)
-    , requestedFileType;
-  var requestedFileData = tokenisedUrl.length === 2 &&
-    fileData[tokenisedUrl[1]];
+    , requestedFileType
+    , requestedFileData = tokenisedUrl.length === 2 &&
+    fileData[tokenisedUrl[1]]
+    , statusCodeOk = 200;
   if (requestedFileData) {
     requestedFileType = getTypeFromName(tokenisedUrl[1]);
-    sendResponse(response, 'text/' + requestedFileType, 200, requestedFileData);
+    sendResponse(
+      response, 'text/' + requestedFileType, statusCodeOk, requestedFileData);
   } else {
     serve404(response);
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//                              DATA REQUEST HANDLER                          //
+//                            DATA REQUEST HANDLER                            //
 ////////////////////////////////////////////////////////////////////////////////
 
 function handleDataRequest(request, response) {
@@ -81,7 +83,7 @@ function handleNewUserRequest(request, response) {
 
 
 ////////////////////////////////////////////////////////////////////////////////
-//                                     HELPERS                                //
+//                                   HELPERS                                  //
 ////////////////////////////////////////////////////////////////////////////////
 
 function getRequestBody(request, callback) {

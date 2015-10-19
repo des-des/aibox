@@ -5,22 +5,22 @@ var fs = require('fs');
 var handler = require('../../server/handler.js');
 var fileReader = require('../../server/fileReader.js');
 var caller = require('../../server/database.js').createCaller();
-var fileLoader = fileReader.loadFilesTo;
+var fileLoader = fileReader.loadFiles;
 var fileRequestBuilder = fileReader.makeFileRequestFor;
 var finalCall;
 var newUserData = createNewUserStringFrom('eoin', 'pass');
 var fileData;
 
 caller.add(function(next) {
-  fileReader.loadFiles(function(handlerFileData) {
+  fileReader.loadAllFiles(function(handlerFileData) {
     handler.setFileData(handlerFileData);
     fileData = handlerFileData;
+    console.log('handler file data', handlerFileData);
     next();
   });
 }).add(function(next) {
   testHandlerGetResponse('<>', createStatusCodeTest(404), next);
 }).add(function(next) {
-  console.log('test2!');
   testHandlerGetResponse('/woah/', createStatusCodeTest(404), next);
 }).add(function(next) {
   testHandlerGetResponse('?', createStatusCodeTest(404), next);
@@ -47,7 +47,7 @@ caller.add(function(next) {
       '/data/newusers', createStatusCodeTest(404), next);
 }).add(function(next) {
   test('checking file loader can handle bad file name', function(tester) {
-    fileLoader({}, [fileRequestBuilder('main.html')], function(badFiles) {
+    fileLoader(['main.html'], function(badFiles) {
       badFilesTest(badFiles, tester);
       next();
     });
@@ -73,9 +73,9 @@ caller.add(function(next) {
 function badFilesTest(badFiles, tester) {
   tester.equal(Object.keys(badFiles).length, 0, 'Yo');
   tester.end();
-};
+}
 
-var testHandlerResponse = function(request, responseTest, next) {
+function testHandlerResponse(request, responseTest, next) {
   test('handler test', function(tester) {
     shot.inject(handler.handler, request, function(response) {
       responseTest(request, response, tester);
@@ -85,7 +85,7 @@ var testHandlerResponse = function(request, responseTest, next) {
   });
 }
 
-var testHandlerGetResponse = function(requestUrl, responseTest, next) {
+function testHandlerGetResponse(requestUrl, responseTest, next) {
   var getRequest = {
     url: requestUrl,
     method: 'GET'
@@ -102,14 +102,9 @@ function testHandlerPostResponse(requestUrl, responseTest, payload, next) {
   testHandlerResponse(getRequest, responseTest, next);
 }
 
-var createStatusCodeTest = function(expectedStatusCode) {
+function createStatusCodeTest(expectedStatusCode) {
   return function(request, response, tester) {
-    // test('testing if url ' + request.url +
-    //   ' returns status code ' + expectedStatusCode, function(t) {
         tester.equal(response.statusCode, expectedStatusCode);
-        // tester.end();
-        // next();
-      // });
   }
 }
 

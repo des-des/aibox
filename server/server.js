@@ -8,7 +8,7 @@ database.startDB();
 
 var port = process.env.port || 4000;
 
-fileReader.loadFiles(function(fileData){
+fileReader.loadAllFiles(function(fileData){
   handler.setFileData(fileData);
   server = http.createServer(handler.handler);
   server.listen(port, function() {
