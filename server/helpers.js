@@ -6,6 +6,8 @@ var caller = function(callsArray, context) {
       if (callsArray[i-1]) {
         var nextCallArray = callsArray[i-1];
         var nextCall = nextCallArray[0];
+        // console.log('nextCallArray', nextCallArray);
+        // console.log('nextCallArray', typeof(nextCall));
         nextCall.apply(context || nextCall, nextCallArray.splice(1).concat(next));
       } else {
         callback(context);
@@ -23,6 +25,8 @@ var caller = function(callsArray, context) {
     };
     callsArray.forEach(function(callArray) {
       var nextCall = callArray[0];
+      // console.log('crash!', typeof nextCall);
+      // console.log(callsArray);
       nextCall.apply(context || nextCall, callArray.slice(1).concat(next));
     });
   };

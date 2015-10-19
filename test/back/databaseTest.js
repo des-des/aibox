@@ -2,82 +2,73 @@ var test = require('tape');
 
 var authenticator = require('../../server/authenticator.js');
 var database = require('../../server/database.js');
+var createCaller = require('../../server/helpers').createCaller;
 
-var finalCall;
-
-var caller = database.createCaller();
-caller.add(function(next) {
+var main = function(finalCall) {
   database.flush();
-  // database.startDB();
-  test('Trying to store new user in database returns true', function(tester) {
-    database.putUser('eoin', 'secret', function(reply) {
-      tester.ok(reply, 'put new user returns true');
-      tester.end();
-      next();
-    });
-  });
-}).add(function(next) {
-  test('Trying to store existing user in database returns false', function(tester) {
-    database.putUser('eoin', 'secret', function(reply) {
-      tester.ok(!reply, 'put existing user returns false');
-      tester.end();
-      next();
-    });
-  });
-}).add(function(next) {
-  test('can delete user again', function(tester) {
-    database.deleteUser('eoin', function(response) {
-      tester.equal(response, 1, 'user successfully deleted');
-      tester.end();
-      next();
-    });
-  })
-}).add(function(next) {
-  test('attempt to create new user returns true', function(tester){
-    authenticator.createNewUser('eoin', 'pass', function(reply){
-      tester.ok(reply, 'new user created');
-      tester.end();
-      next();
-    });
-  });
-}).add(function(next) {
-  test('attempt to create existing user returns false', function(tester){
-    authenticator.createNewUser('eoin', 'pass', function(reply){
-      tester.ok(!reply, 'new user not created');
-      tester.end();
-      next();
-    });
-  });
-}).add(function(next) {
-  test('new user successfully validated', function(tester){
-    authenticator.validateUser('eoin', 'pass', function(reply){
-      tester.ok(reply, 'password match');
-      tester.end();
-      next();
-    });
-  });
-}).add(function(next) {
-  test('incorrect password fails', function(tester){
-    authenticator.validateUser('eoin', 'password', function(reply){
-      tester.ok(!reply, 'password do not match');
-      tester.end();
-      next();
-    });
-  });
-}).add(function(next) {
-  test('new user successfully deleted', function(tester){
-    authenticator.validateUser('eoin', 'pass', function(reply){
-      if (reply) {
-        database.deleteUser('eoin');
-      }
-      tester.ok(reply, 'new user deleted');
-      tester.end();
-      finalCall();
-    });
-  });
-});
+  var putUserTestArray = [
+    [putUserTest, 'eoin', 'pass', true],
+    [putUserTest, 'eoin', 'pass', false],
+    [deleteUserTest, 'eoin']
+  ];
 
-module.exports = function(final) {
-  finalCall = final;
-  caller();
+  var authenticatorTestArray = [
+    [authenticateNewUserTest, 'eoinmc', 'pass', true],
+    [authenticateNewUserTest, 'eoinmc', 'pass', false],
+    [valitdateTest, 'eoinmc', 'pass', true],
+    [valitdateTest, 'eoinmc', 'password', false],
+    [deleteUserTest, 'eoinmc']
+  ];
+
+  var parallelTestArray = [
+    [createCaller(putUserTestArray).series],
+    [createCaller(authenticatorTestArray).series]
+  ]
+  createCaller(parallelTestArray).parallel(finalCall);
+};
+
+function deleteUserTest(username, next) {
+  test('try to delete user', function(tester) {
+    database.deleteUser(username, function(response) {
+      tester.equal(response, 1, 'user ' + username + 'successfully deleted');
+      tester.end();
+      next();
+    });
+  });
 }
+
+function authenticateNewUserTest(username, password, expected, next) {
+  test('try to create new user', function(tester){
+    authenticator.createNewUser(username, password, function(reply){
+      tester.equal(reply, expected,
+        'create new user ' + username + 'test passed');
+      tester.end();
+      next();
+    });
+  });
+}
+
+function putUserTest(username, password, expected, next) {
+  test('Trying to store new user', function(tester) {
+    database.putUser(username, password, function(reply) {
+      tester.equal(reply, expected, 'put new user ' + username + ' returns ' + expected);
+      tester.end();
+      next();
+    });
+  });
+}
+
+function valitdateTest(username, password, expected, next) {
+  test('Testing user validation', function(tester){
+    authenticator.validateUser(username, password, function(reply){
+      tester.equal(reply, expected,
+        'username ' + username +
+        ' password ' + password +
+        ' returns ' + expected);
+      tester.end();
+      next();
+    });
+  });
+}
+
+module.exports = main;

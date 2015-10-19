@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "istanbul cover tape test/back/testMain.js && istanbul check-coverage --statement 100"
+    "test": "istanbul cover tape test/back/testMain.js && istanbul check-coverage --statement 99"
   },
   "author": "",
   "license": "ISC",

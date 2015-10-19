@@ -27,7 +27,8 @@ function readFileFrom(loadRequest, finalCallback) {
     if (!err) {
       that[loadRequest.fileKey] = fileData;
     } else {
-      console.log(err);
+      console.log('bad file path in fileReader ' +
+        loadRequest.filePath + " ignored");
     }
     finalCallback(that);
   });

@@ -5,7 +5,7 @@ var database = require('./database.js');
 // TODO: error handling
 
 function createNewUser(username, password, callback) {
-  bcrypt.genSalt(10, function(error, salt) {
+  bcrypt.genSalt(12, function(error, salt) {
     bcrypt.hash(password, salt, function(error, hash) {
       database.putUser(username, hash, callback);
     });

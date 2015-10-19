@@ -6,22 +6,6 @@ var keys = {
   userPasswordHashes: 'usrH'
 };
 
-var createCaller = function () {
-  var middlewareStore = [];
-
-  function caller () {
-    (function next(){
-      middlewareStore.shift()(next);
-    }());
-  }
-
-  caller.add = function (fn) {
-    middlewareStore.push(fn);
-    return this;
-  };
-  return caller;
-};
-
 function startDB() {
   client = redis.createClient(process.env.REDIS_URL, {no_ready_check: true});
 }
@@ -75,7 +59,6 @@ function flush() {
 module.exports = {
   stopDB: stopDB,
   startDB: startDB,
-  createCaller: createCaller,
   putUser: putUser,
   deleteUser: deleteUser,
   getHash: getHash,

@@ -1,15 +1,25 @@
 var databaseTest = require('./databaseTest.js');
 var handlerTest = require('./handlerTest.js');
+var database = require('../../server/database.js')
+var createCaller = require('../../server/helpers.js').createCaller;
+var handler = require('../../server/handler.js')
+var fileReader = require('../../server/fileReader.js');
 
-var database = require('../../server/database.js');
-
-var caller = database.createCaller();
-
-caller.add(function(next) {
+var startTests = function(next) {
   database.startDB();
-  next();
-}).add(handlerTest)
-  .add(databaseTest)
-  .add(database.stopDB);
+  fileReader.loadAllFiles(function(handlerFileData) {
+    handler.setFileData(handlerFileData);
+    next();
+  });
+};
 
-caller();
+var callsArray = [
+  [startTests],
+  [handlerTest],
+  [databaseTest],
+  [database.stopDB]
+];
+
+createCaller(callsArray).series(function() {
+  console.log('tests finished');
+});

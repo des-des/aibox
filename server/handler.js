@@ -8,12 +8,16 @@ function setFileData(data) {
   fileData = data;
 }
 
+function getFileData() {
+  return fileData;
+}
+
 function handler(request, response) {
   console.log(request.url);
   var tokenisedUrl = tokeniseRequestUrl(request);
   var urlRoot = tokenisedUrl[0];
   if (urlRoot === 'public') {
-    handlerPublicRequest(request, response)
+    handlerPublicRequest(tokenisedUrl, response)
   } else if (urlRoot === 'data') {
     handleDataRequest(request, response);
   } else {
@@ -25,19 +29,24 @@ function handler(request, response) {
 //                          PUBLIC REQUEST HANDLER                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-var handlerPublicRequest = function(request, response) {
-  var tokenisedUrl = tokeniseRequestUrl(request)
-    , requestedFileType
-    , requestedFileData = tokenisedUrl.length === 2 &&
-    fileData[tokenisedUrl[1]]
-    , statusCodeOk = 200;
+var handlerPublicRequest = function(tokenisedUrl, response) {
+  var requestedFileData = getFileUsing(tokenisedUrl)
   if (requestedFileData) {
-    requestedFileType = getTypeFromName(tokenisedUrl[1]);
-    sendResponse(
-      response, 'text/' + requestedFileType, statusCodeOk, requestedFileData);
+    servePublicRequest(response, requestedFileData, tokenisedUrl);
   } else {
     serve404(response);
   }
+}
+
+function servePublicRequest(response, requestedFileData, tokenisedUrl) {
+  var requestedFileMeme = 'text/' + getTypeFromName(tokenisedUrl[1])
+    , statusCodeOk = 200;
+  sendResponse(
+    response, requestedFileMeme, statusCodeOk, requestedFileData);
+}
+
+function getFileUsing(tokenisedUrl) {
+  return tokenisedUrl.length === 2 && fileData[tokenisedUrl[1]];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -69,18 +78,21 @@ function handleNewUserRequest(request, response) {
     userData = JSON.parse(body);
     name = userData.username;
     pass = userData.password;
-    authenticator.createNewUser(name, pass, function(reply) {
-        if (reply) {
-          writeHeadTo(response, 'text/plain', 200);
-          response.end('success!');
-        } else {
-          writeHeadTo(response, 'text/plain', 200);
-          response.end('nah m8');
-        }
+    authenticator.createNewUser(name, pass, function(createNewUserResult) {
+      serveNewUserResponse(response, createNewUserResult)
     });
   });
 }
 
+function serveNewUserResponse(response, createNewUserResult) {
+  if (createNewUserResult) {
+    writeHeadTo(response, 'text/plain', 200);
+    response.end('success!');
+  } else {
+    writeHeadTo(response, 'text/plain', 200);
+    response.end('nah m8');
+  }
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                   HELPERS                                  //
@@ -107,7 +119,7 @@ function getTypeFromName(name) {
 }
 
 function sendResponse(response, contentType, statusCode, responseData) {
-  writeHeadTo(response, contentType, 200);
+  writeHeadTo(response, contentType, statusCode);
   response.end(responseData);
 }
 
@@ -130,5 +142,6 @@ function serve404(response) {
 
 module.exports = {
   handler: handler,
-  setFileData: setFileData
+  setFileData: setFileData,
+  getFileData: getFileData
 };
