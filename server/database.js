@@ -48,7 +48,9 @@ function getHash(username, callback) {
 
 function deleteUser(username, callback) {
   client.DEL(createUserKeyFrom(username), function(err, reply) {
-    callback && callback(reply);
+    if (typeof callback === 'function') {
+      callback(reply);
+    }
   });
 }
 

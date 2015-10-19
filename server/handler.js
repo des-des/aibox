@@ -17,7 +17,7 @@ function handler(request, response) {
   var tokenisedUrl = tokeniseRequestUrl(request);
   var urlRoot = tokenisedUrl[0];
   if (urlRoot === 'public') {
-    handlerPublicRequest(tokenisedUrl, response)
+    handlerPublicRequest(tokenisedUrl, response);
   } else if (urlRoot === 'data') {
     handleDataRequest(request, response);
   } else {
@@ -30,17 +30,17 @@ function handler(request, response) {
 ////////////////////////////////////////////////////////////////////////////////
 
 var handlerPublicRequest = function(tokenisedUrl, response) {
-  var requestedFileData = getFileUsing(tokenisedUrl)
+  var requestedFileData = getFileUsing(tokenisedUrl);
   if (requestedFileData) {
     servePublicRequest(response, requestedFileData, tokenisedUrl);
   } else {
     serve404(response);
   }
-}
+};
 
 function servePublicRequest(response, requestedFileData, tokenisedUrl) {
-  var requestedFileMeme = 'text/' + getTypeFromName(tokenisedUrl[1])
-    , statusCodeOk = 200;
+  var requestedFileMeme = 'text/' + getTypeFromName(tokenisedUrl[1]),
+    statusCodeOk = 200;
   sendResponse(
     response, requestedFileMeme, statusCodeOk, requestedFileData);
 }
@@ -79,7 +79,7 @@ function handleNewUserRequest(request, response) {
     name = userData.username;
     pass = userData.password;
     authenticator.createNewUser(name, pass, function(createNewUserResult) {
-      serveNewUserResponse(response, createNewUserResult)
+      serveNewUserResponse(response, createNewUserResult);
     });
   });
 }
