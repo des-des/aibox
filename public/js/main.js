@@ -1,7 +1,7 @@
-var signupForm = document.querySelector('form.authenticate');
-var log = console.log;
+/*global document*/
+/*global XMLHttpRequest*/
 
-// console.log(signupForm);
+var signupForm = document.querySelector('form.authenticate');
 signupForm.addEventListener('submit', signupSubmit);
 
 function signupSubmit(event) {
@@ -31,9 +31,9 @@ function sendCreateUserRequest(username, password, callback) {
 }
 
 function postNewUserResponseHandler(postNewUserRequest, callback) {
-  var responseReadyState = postNewUserRequest.readyState
-    , responseStatusCode
-    , responseText;
+  var responseReadyState = postNewUserRequest.readyState,
+    responseStatusCode,
+    responseText;
   if (responseReadyState === 4) {
     responseStatusCode = postNewUserRequest.status;
     if (responseStatusCode === 200) {
@@ -42,6 +42,10 @@ function postNewUserResponseHandler(postNewUserRequest, callback) {
       logRequestError(postNewUserRequest, 'New user');
     }
   }
+}
+
+function arrayFrom(enumerable) {
+  return [].slice.apply(enumerable);
 }
 
 function logRequestError(request, requestDescription) {
@@ -60,8 +64,4 @@ function getFirstElementByNameFrom(elementCollection, nameToFind) {
   if (matches.length === 1) {
     return matches[0];
   }
-}
-
-function arrayFrom(enumerable) {
-  return [].slice.apply(enumerable);
 }

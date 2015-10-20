@@ -29,14 +29,14 @@ function handler(request, response) {
 //                          PUBLIC REQUEST HANDLER                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-var handlerPublicRequest = function(tokenisedUrl, response) {
+function handlerPublicRequest(tokenisedUrl, response) {
   var requestedFileData = getFileUsing(tokenisedUrl);
   if (requestedFileData) {
     servePublicRequest(response, requestedFileData, tokenisedUrl);
   } else {
     serve404(response);
   }
-};
+}
 
 function servePublicRequest(response, requestedFileData, tokenisedUrl) {
   var requestedFileMeme = 'text/' + getTypeFromName(tokenisedUrl[1]),

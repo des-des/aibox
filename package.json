@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "istanbul cover tape test/back/testMain.js && istanbul check-coverage --statement 99"
+    "test": "istanbul cover tape test/back/testMain.js && istanbul check-coverage --statement 99",
+    "jshint": "jshint -c .jshintrc --exclude-path .gitignore ."
   },
   "author": "",
   "license": "ISC",
@@ -16,6 +17,7 @@
     "tape": "^4.2.1"
   },
   "pre-commit": [
+    "jshint",
     "test"
   ],
   "dependencies": {

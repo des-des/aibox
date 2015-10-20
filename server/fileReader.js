@@ -1,4 +1,4 @@
-fs = require('fs');
+var fs = require('fs');
 
 var createCaller = require('./helpers.js').createCaller;
 
