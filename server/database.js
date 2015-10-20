@@ -10,14 +10,20 @@ function startDB() {
   client = redis.createClient(process.env.REDIS_URL, {no_ready_check: true});
 }
 
-function stopDB() {
+function stopDB(callback) {
   client.quit();
+  if (typeof callback === 'function') {
+    callback();
+  }
 }
 
 function putUser(username, passwordHash, callback) {
   checkUserExists(username, function(userExists) {
     if (!userExists) {
-      client.SET(createUserKeyFrom(username), passwordHash, function(err, reply) {
+      client.SET(createUserKeyFrom(username), passwordHash, function(error, reply) {
+        if (error) {
+          console.log(error);
+        }
         callback(!userExists);
       });
     } else {
@@ -31,7 +37,11 @@ function createUserKeyFrom(username) {
 }
 
 function checkUserExists(username, callback) {
-  client.GET(createUserKeyFrom(username), function(err, reply) {
+  console.log(username);
+  client.GET(createUserKeyFrom(username), function(error, reply) {
+    if (error) {
+      console.log(error);
+    }
     if (reply) {
       callback(true);
     } else {
@@ -41,13 +51,19 @@ function checkUserExists(username, callback) {
 }
 
 function getHash(username, callback) {
-  client.GET(createUserKeyFrom(username), function(err, reply) {
+  client.GET(createUserKeyFrom(username), function(error, reply) {
+    if (error) {
+      console.log(error);
+    }
     callback(reply);
   });
 }
 
 function deleteUser(username, callback) {
-  client.DEL(createUserKeyFrom(username), function(err, reply) {
+  client.DEL(createUserKeyFrom(username), function(error, reply) {
+    if (error) {
+      console.log(error);
+    }
     if (typeof callback === 'function') {
       callback(reply);
     }
