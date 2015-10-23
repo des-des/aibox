@@ -23,8 +23,10 @@ function putUser(username, passwordHash, callback) {
       client.SET(createUserKeyFrom(username), passwordHash, function(error, reply) {
         if (error) {
           console.log(error);
+          callback()
+        } else {
+          callback(!userExists);
         }
-        callback(!userExists);
       });
     } else {
       callback(!userExists);

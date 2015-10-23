@@ -1,8 +1,8 @@
 var http = require('http');
 
-var handler = require('./handler.js');
-var fileReader = require('./fileReader.js');
-var database = require('./database.js');
+var handler = require('./server/handler.js');
+var fileReader = require('./server/fileReader.js');
+var database = require('./server/database.js');
 var server;
 
 database.startDB();

@@ -36,6 +36,7 @@ function testErrors(next) {
     [database.putUser, 'eoinmcc', 'hash'],
     [database.getHash, 'eoinmcc'],
     [database.deleteUser, 'eoinmcc', 'hash'],
+    [authenticator.createNewUser, 'eoinmcc', 'hash'],
     [database.stopDB, '??err']
   ];
   createCaller(crashTestArray).parallel(next);

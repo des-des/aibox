@@ -13,6 +13,7 @@ var main = function(finalCall) {
   ];
 
   var authenticatorTestArray = [
+    [valitdateTest, 'eoinmc', 'pass', false],
     [authenticateNewUserTest, 'eoinmc', 'pass', true],
     [authenticateNewUserTest, 'eoinmc', 'pass', false],
     [valitdateTest, 'eoinmc', 'pass', true],

@@ -6,6 +6,7 @@ function loadAllFiles(callback) {
     loadFiles(['index.html', 'custom.css', 'main.js'], callback);
 }
 
+
 function loadFiles(fileNames, callback) {
   var loadRequests = fileNames.map(function(fileName) {
     return [readFileFrom, makeFileRequestFor(fileName)];
@@ -33,45 +34,8 @@ function readFileFrom(loadRequest, finalCallback) {
     finalCallback(that);
   });
 }
-//
-// function loadFiles(callback) {
-//   var loadRequest = [
-//     makeFileRequestFor('index.html'),
-//     makeFileRequestFor('custom.css'),
-//     makeFileRequestFor('main.js'),
-//   ];
-//   loadFilesTo({}, loadRequest, callback);
-// }
-//
-// function loadFilesTo(files, loadRequests, callback) {
-//   var loaded = 0;
-//   loadRequests.forEach(function(loadRequest) {
-//     fs.readFile(loadRequest.filePath, function(err, fileData) {
-//       putFile(loadRequest, files, err, fileData);
-//     });
-//   });
-//
-//   function putFile(loadRequest, files, err, fileData) {
-//     if (!err) {
-//       files[loadRequest.fileKey] = fileData;
-//       callbackIfFinished();
-//     } else {
-//       console.log(err);
-//       callbackIfFinished();
-//     }
-//   }
-//
-//   function callbackIfFinished() {
-//     loaded += 1;
-//     if (loaded === loadRequests.length) {
-//       callback(files);
-//     }
-//   }
-// }
 
  module.exports = {
    loadFiles: loadFiles,
    loadAllFiles: loadAllFiles,
-  //  loadFilesTo: loadFilesTo,
-   makeFileRequestFor: makeFileRequestFor,
 }
