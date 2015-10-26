@@ -31,9 +31,8 @@ function sendCreateUserRequest(username, password, callback) {
 }
 
 function postNewUserResponseHandler(postNewUserRequest, callback) {
-  var responseReadyState = postNewUserRequest.readyState,
-    responseStatusCode,
-    responseText;
+  var responseReadyState = postNewUserRequest.readyState;
+  var responseStatusCode;
   if (responseReadyState === 4) {
     responseStatusCode = postNewUserRequest.status;
     if (responseStatusCode === 200) {

@@ -132,7 +132,7 @@ function writeHeadTo(response, contentType, statusCode) {
 function serve404(response) {
   console.log('serving 404');
   response.writeHead(404);
-  response.end();
+  response.end('404');
 }
 
 ////////////////////////////////////////////////////////////////////////////////

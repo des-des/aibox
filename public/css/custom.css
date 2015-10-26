@@ -1,0 +1,19 @@
+.navbar {
+  width: 100%;
+  height: 3em;
+  position: fixed;
+  top: 0;
+}
+
+.navbar .authbuttons {
+  float: right;
+  margin-right: 1em;
+}
+
+.navbar .authbuttons button {
+  margin: .5em;
+}
+
+.contentmain {
+  margin-top: 3em;
+}

@@ -3,7 +3,13 @@ var fs = require('fs');
 var createCaller = require('./helpers.js').createCaller;
 
 function loadAllFiles(callback) {
-    loadFiles(['index.html', 'custom.css', 'main.js'], callback);
+    loadFiles([
+      'index.html',
+      'signup.html',
+      'login.html',
+      'custom.css',
+      'main.js'
+    ], callback);
 }
 
 
