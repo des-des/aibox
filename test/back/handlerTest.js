@@ -39,7 +39,9 @@ function testFileKeys(next) {
     var expectedFileKeys = [
       'index.html',
       'custom.css',
-      'main.js'
+      'main.js',
+      'login.html',
+      'signup.html'
     ];
     expectedFileKeys.forEach(function(fileKey) {
       tester.ok(handler.getFileData()[fileKey], 'key ' + fileKey + ' exists');
