@@ -18,11 +18,7 @@ function handler(request, response) {
   var tokenisedUrl = tokeniseRequestUrl(request);
   var urlRoot = tokenisedUrl[0];
   console.log(urlRoot);
-  if (urlRoot === 'test') {
-    console.log('TEST');
-    getRequestBody(request, function(data) {
-    });
-  } else if (urlRoot === 'public') {
+  if (urlRoot === 'public') {
     handlerPublicRequest(tokenisedUrl, response);
   } else if (urlRoot === 'data') {
     handleDataRequest(request, response);
