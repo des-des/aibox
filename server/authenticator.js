@@ -3,11 +3,12 @@ var bcrypt = require('bcrypt');
 var database = require('./database.js');
 
 function createNewUser(username, password, callback) {
-  bcrypt.genSalt(12, function(error, salt) {
-    bcrypt.hash(password, salt, function(error, hash) {
+  bcrypt.genSalt(12, function(saltError, salt) {
+    bcrypt.hash(password, salt, function(hashError, hash) {
       database.putUser(username, hash, function(result) {
-        if (error || typeof result === 'undefined') {
+        if (saltError || hashError || typeof result === 'undefined') {
           console.log('validate user failed due to db or bcypt failure');
+          console.log(saltError || hashError || "putUser failed");
         }
         callback(result);
       });

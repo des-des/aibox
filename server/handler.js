@@ -14,9 +14,15 @@ function getFileData() {
 
 function handler(request, response) {
   console.log(request.url);
+  console.log(request);
   var tokenisedUrl = tokeniseRequestUrl(request);
   var urlRoot = tokenisedUrl[0];
-  if (urlRoot === 'public') {
+  console.log(urlRoot);
+  if (urlRoot === 'test') {
+    console.log('TEST');
+    getRequestBody(request, function(data) {
+    });
+  } else if (urlRoot === 'public') {
     handlerPublicRequest(tokenisedUrl, response);
   } else if (urlRoot === 'data') {
     handleDataRequest(request, response);

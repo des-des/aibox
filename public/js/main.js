@@ -1,8 +1,15 @@
 /*global document*/
 /*global XMLHttpRequest*/
 
-var signupForm = document.querySelector('form.authenticate');
-signupForm.addEventListener('submit', signupSubmit);
+var authenticationForm = document.querySelector('form.authenticate');
+var formType = authenticationForm.className;
+if (formType.match(/signup/)) {
+  authenticationForm.addEventListener('submit', signupSubmit);
+} else if (formType.match(/login/)) {
+  console.log('login form!');
+} else {
+  console.log('form type ' + formType + ' not found');
+}
 
 function signupSubmit(event) {
   var form = event.srcElement;
