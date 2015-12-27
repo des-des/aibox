@@ -18,18 +18,24 @@ module.exports = function branchCreator(startPos) {
   };
 
   var getLastPos = function() {
-    return [startPos[0], startPos[1]+actions.length];
+    var y = startPos[1] + (actions.length === 0 ? 0 : actions.length - 1);
+    return [startPos[0], y];
   };
 
   var getFirstAction = function() {
     return actions[0];
-  }
+  };
+
+  var getLastAction = function() {
+    return actions[actions.length-1];
+  };
 
   return {
     getFirstPos: getFirstPos,
     addAction: addAction,
     getActionAt: getActionAt,
     getLastPos: getLastPos,
-    getFirstAction: getFirstAction
+    getFirstAction: getFirstAction,
+    getLastAction: getLastAction
   };
 };
