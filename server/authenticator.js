@@ -1,6 +1,15 @@
 var bcrypt = require('bcrypt');
+var jwt = require('json-web-token');
+var env = require('env2')('../config.env');
 
 var database = require('./database.js');
+
+function issueSessionWebToken(username) {
+  return jwt.sign({
+    usr: username,
+    exp: Math.floor(new Date().getTime()/1000) + 7*24*60*60
+  }, process.env.jwt_secret);
+}
 
 function createNewUser(username, password, callback) {
   bcrypt.genSalt(12, function(saltError, salt) {

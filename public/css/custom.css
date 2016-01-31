@@ -17,3 +17,12 @@
 .contentmain {
   margin-top: 3em;
 }
+
+.slide-right{
+  transition: right .5s;
+  right: 0;
+}
+
+.slide-right .hidden{
+  left: 0;
+}

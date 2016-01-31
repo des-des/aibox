@@ -80,8 +80,8 @@ function handleNewUserRequest(request, response) {
     userData = JSON.parse(body);
     name = userData.username;
     pass = userData.password;
-    authenticator.createNewUser(name, pass, function(createNewUserResult) {
-      serveNewUserResponse(response, createNewUserResult);
+    authenticator.createNewUser(name, pass, function(newUserJWT) {
+      serveNewUserResponse(response, newUserJWT, name);
     });
   });
 }
