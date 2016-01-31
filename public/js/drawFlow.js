@@ -2,10 +2,8 @@ var width = 300;
 
 var testDraw = function() {
   var svgWrapper = getSvgWrapper();
-  var testFlow = getTestFlow();
+  var testFlow = getNodes(getTestFlow());
   draw(testFlow, width, svgWrapper);
-  // console.log(testFlow);
-  // console.log(svgWrapper);
 }
 
 var transform = {
@@ -39,7 +37,6 @@ var getNodesAndLinksFromNodeLevel = function(nodeLevel, nodeLevelDepth) {
 }
 
 var createRenderData = function(logicData) {
-  console.log(logicData);
   return logicData.reduce(function(renderData, nodeLevel, nodeLevelDepth) {
     var levelRenderData =
       getNodesAndLinksFromNodeLevel(nodeLevel, nodeLevelDepth)
@@ -73,11 +70,10 @@ var drawLabels = function(svgContainer, nodeData) {
     .enter()
     .append('text')
     .attr("x", function(d) {
-      // console.log('in drawLabels', d.getX());
-      return transform.x(d.getX());
+      return transform.x(d.getX()) + 10;
     })
-    .attr("y", function(d) { return d.getY()+5; })
-    // .text( function (d) { return d.data.operation.toString(); })
+    .attr("y", function(d) { return transform.y(d.getY()); })
+    .text( function (d) { return d.getType() !== 'stub' ? d.getId() : ''; })
     .attr("font-family", "Courier")
     .attr("font-size", "12px")
     .attr("fill", "white");
@@ -124,7 +120,6 @@ var drawNodes = function(svgContainer, nodeData) {
     })
     .attr('cy', (d) => transform.y(d.getY()))
     .attr("fill", function(d) {
-      console.log('in draw nodes', d.getType());
       return d.getType() !== "stub" ? "white" : "none";
       // return "white";
     });
@@ -136,5 +131,4 @@ var getNode = function(id, nodeData) {
   })[0];
 };
 
-// draw(sampleData2, width);
 testDraw();

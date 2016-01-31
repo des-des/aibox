@@ -7,8 +7,6 @@ var getNodes = function(mat) {
     links: spaces.links
   };
   spreadX(result.nodes);
-
-  // console.log(spaces);
   return result;
 };
 
@@ -21,10 +19,9 @@ getNextNodes = function(mat, current, next) {
       nodes: []
     };
   } else {
-    var newNodeIds = getNextIds(mat[current.getId()]);
+    var newNodeIds = mat[current.getId()];
     var newNodes = createNodesFromLinks(current, newNodeIds);
     var next = resolveConflicts(next.concat(newNodes));
-    // var links = createLinks(current, newNodes, makeId);
     return mergeResults(
       current,
       newNodes,
@@ -49,15 +46,13 @@ var createNodesFromLinks = function(parent, links, type) {
 };
 
 var createNode = function(id, x_, y, type) {
-  console.log(id, x_);
   var x = x_;
   return {
     getX: () => x,
-    setX: (newX) => x = newX,
+    setX: newX => x = newX,
     getY: () => y,
     getId: () => id,
     getType: () => type
-    // console.log("node: {id: " + id + " x: " + x + " y: " + y + "}");
   };
 };
 
@@ -71,12 +66,7 @@ var tail = function(arr) {
 };
 
 var fillSpaces = function(nodes, links, createId) {
-  // console.log('>', i);
-  // console.log(linkIds.length);
-  console.log(nodes);
-
   return links.reduce((result, link) => {
-    // console.log(link);
     var i;
     var parent;
     var childNode = getNodeById(nodes, link[1]);
@@ -88,7 +78,6 @@ var fillSpaces = function(nodes, links, createId) {
         links: result.links.concat([[parentNode.getId(), childNode.getId()]])
       };
     } else {
-      console.log('woah!', yDiff);
       for (i = 0; i < yDiff - 1; i++) {
         nextNode = createNodesFromLinks(parentNode, [createId()], 'stub')[0];
         result.links.push([parentNode.getId(), nextNode.getId()]);
@@ -143,7 +132,6 @@ var resolveConflicts = function(nextNodes) {
 
 var spreadX = function(nodes) {
   var nodesInY = nodes.reduce((nodesInY, node) => {
-    // console.log(node.getX());
     typeof nodesInY[node.getY()] !== 'undefined' ?
       nodesInY[node.getY()].push(node) :
       nodesInY[node.getY()]= [node]
@@ -152,7 +140,6 @@ var spreadX = function(nodes) {
   nodesInY = nodesInY.map(level => level.sort(compareX));
   nodesInY.forEach(level => level.forEach((node, x) => {
     node.setX((x + 1) / (level.length + 1))
-    console.log('>>', node.getX());
   }));
 },
 
@@ -166,14 +153,3 @@ compareX = function(x1, x2) {
     i += 1;
   }
 }
-
-getTestFlow = () => getNodes([
-  [0, 1, 1, 0, 0, 0, 0, 0], // 1 -> 2, 3
-  [0, 0, 0, 1, 0, 0, 0, 0], // 2 -> 4
-  [0, 0, 0, 0, 1, 1, 0, 0], // 3 -> 5, 6
-  [0, 0, 0, 0, 0, 0, 0, 1], // 4 -> 8
-  [0, 0, 0, 0, 0, 0, 1, 0], // 5 -> 7
-  [0, 0, 0, 0, 0, 0, 1, 0], // 6 -> 7
-  [0, 0, 0, 0, 0, 0, 0, 1], //
-  [0, 0, 0, 0, 0, 0, 0, 0]
-]);
