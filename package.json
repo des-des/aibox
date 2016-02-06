@@ -4,9 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "istanbul cover tape test && istanbul check-coverage --statement 99",
+    "pretest": "npm run build",
+    "test": "istanbul cover tape test",
     "jshint": "jshint -c .jshintrc --exclude-path .gitignore .",
-    "watch-build": "babel src/public -d public/js -w"
+    "watch-build": "babel src/public -d public/js -w",
+    "build": "babel src/public -d public/js"
   },
   "author": "",
   "license": "ISC",
