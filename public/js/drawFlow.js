@@ -2,7 +2,8 @@ var width = 300;
 
 var testDraw = function() {
   var svgWrapper = getSvgWrapper();
-  var testFlow = getNodes(getTestFlow());
+  var testFlow = mat2Graph(getTestFlow());
+  console.log('testflow2!');
   draw(testFlow, width, svgWrapper);
 }
 

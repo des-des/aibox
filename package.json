@@ -5,12 +5,14 @@
   "main": "index.js",
   "scripts": {
     "test": "istanbul cover tape test && istanbul check-coverage --statement 99",
-    "jshint": "jshint -c .jshintrc --exclude-path .gitignore ."
+    "jshint": "jshint -c .jshintrc --exclude-path .gitignore .",
+    "watch-build": "babel src/public -d public/js -w"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "istanbul": "^0.4.0",
+    "babel-cli": "^6.4.5",
+    "istanbul": "^0.4.2",
     "nodemon": "^1.7.1",
     "pre-commit": "^1.1.1",
     "shot": "^1.7.0",
