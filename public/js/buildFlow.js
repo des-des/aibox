@@ -22,6 +22,11 @@ var state = (function() {
       state[newNode] = [];
       return newNode;
     },
+    getOpenNodes: function() {
+      return state.reduce((openBranches, links, i) => (
+        openBranches.concat(links.length ? [] : [i])
+      ), []);
+    },
     get: function() {
       return state;
     }
@@ -29,13 +34,21 @@ var state = (function() {
 }());
 
 var getTestFlow = function() {
-  state.pushNode(0);
-  state.pushSplit(1);
-  state.pushNode(2);
-  state.pushSplit(3);
-  state.pushMerge([4, 5]);
-  state.pushNode(7)
-  state.pushMerge([6, 8]);
-  state.pushNode(9);
+  state.pushNode(state.getOpenNodes());
+  state.pushSplit(state.getOpenNodes());
+  state.pushNode(state.getOpenNodes()[0]);
+  state.pushNode(state.getOpenNodes()[0]);
+  state.pushMerge(state.getOpenNodes());
+
+  console.log(executeFlow(-1, state.get(), [
+    (x) => x*2,
+    (x) => x < 0,
+    (x) => x/2,
+    (x) => x*2,
+    (x) => x*2,
+    (x) => x*2,
+    (x) => x*2
+  ]));
+
   return state.get();
 }
