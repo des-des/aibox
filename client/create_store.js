@@ -1,5 +1,4 @@
 import { createStore, applyMiddleware } from 'redux'
-import { combineReducers } from 'redux-immutable';
 import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
 import { browserHistory } from 'react-router'
 import createLogger from 'redux-logger'
@@ -9,9 +8,7 @@ import Immutable from 'immutable'
 import reducers from './reducers/'
 
 const store = createStore(
-  combineReducers({
-    ...reducers,
-  }),
+  reducers,
   Immutable.Map({}),
   applyMiddleware(...middleware)
 )
