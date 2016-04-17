@@ -7,8 +7,9 @@
     "pretest": "npm run build",
     "test": "istanbul cover tape test",
     "jshint": "jshint -c .jshintrc --exclude-path .gitignore .",
-    "watch-build": "babel src/public -d public/js -w",
-    "build": "babel src/public -d public/js"
+    "build:watch": "babel src/public -d public/js -w",
+    "build": "babel src/public -d public/js",
+    "dev:serve": "webpack-dev-server --config webpack.development.config.js"
   },
   "author": "",
   "license": "ISC",
@@ -26,7 +27,22 @@
     "test"
   ],
   "dependencies": {
+    "babel-core": "^6.7.6",
+    "babel-loader": "^6.2.4",
     "bcrypt": "^0.8.5",
-    "redis": "^2.2.4"
+    "d3": "^3.5.16",
+    "immutable": "^3.8.0",
+    "react": "^15.0.1",
+    "react-dom": "^15.0.1",
+    "react-redux": "^4.4.5",
+    "react-router": "^2.2.4",
+    "react-router-redux": "^4.0.2",
+    "redis": "^2.2.4",
+    "redux": "^3.4.0",
+    "redux-immutable": "^3.0.6",
+    "redux-logger": "^2.6.1",
+    "redux-thunk": "^2.0.1",
+    "webpack": "^1.13.0",
+    "webpack-dev-server": "^1.14.1"
   }
 }
