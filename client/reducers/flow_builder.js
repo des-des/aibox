@@ -2,7 +2,8 @@ import { List, fromJS } from 'immutable'
 
 import createReducer from './create_reducer.js'
 import {
-  PUSH_NODE
+  PUSH_NODE,
+  PUSH_SPLIT
 } from '../action_types.js'
 
 const makeId = (id => () => id++)(1)
@@ -13,25 +14,18 @@ export default createReducer(fromJS([[]]), {
     return state
       .set(newNodeId, List([]))
       .set(target, List([newNodeId]))
+  },
+  [PUSH_SPLIT]: (state, { target }) => {
+    const newNodeId1 = makeId()
+    const newNodeId2 = makeId()
+    return state
+      .set(target, List([newNodeId1, newNodeId2]))
+      .set(newNodeId1, List([]))
+      .set(newNodeId2, List([]))
   }
 })
 
 var createFlowBuilder = function(actionCB) {
-  var state = [[]];
-
-  var execActionCB = function() {
-    actionCB(mat2Graph(state));
-  };
-
-  var pushSplit = function(target) {
-    var newNodes = [makeId(), makeId()];
-    state[target] = [newNodes[0], newNodes[1]];
-    state[newNodes[0]] = [];
-    state[newNodes[1]] = [];
-    execActionCB();
-    return newNodes;
-  };
-
   var pushMerge = function(targets) {
     var newNode = makeId();
     state[targets[0]] = [newNode];
