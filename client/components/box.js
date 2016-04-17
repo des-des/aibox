@@ -5,6 +5,9 @@ export default class box extends Component {
   render() {
     return <div id = 'aibox'> </div>
   }
+  componentDidUpdate() {
+    draw(this.props.graph);
+  }
   componentDidMount() {
     draw(this.props.graph);
   }

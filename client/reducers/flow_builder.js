@@ -1,17 +1,28 @@
+import { List, fromJS } from 'immutable'
+
+import {
+  PUSH_NODE
+} from '../action_types.js'
+
+const makeId = (id => () => id++)(1)
+
+export default (state = fromJS([[]]), action) => {
+  const { type } = action
+  switch (type) {
+    case PUSH_NODE:
+      const newNodeId = makeId()
+      return state
+        .set(newNodeId, List([]))
+        .set(action.target, List([newNodeId]))
+  }
+  return state;
+}
+
 var createFlowBuilder = function(actionCB) {
   var state = [[]];
-  var makeId = (id => () => id++)(1);
 
   var execActionCB = function() {
     actionCB(mat2Graph(state));
-  };
-
-  var pushNode = function(target) {
-    var newNode = makeId();
-    state[target] = [newNode];
-    state[newNode] = [];
-    execActionCB();
-    return newNode;
   };
 
   var pushSplit = function(target) {

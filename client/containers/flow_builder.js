@@ -1,18 +1,39 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { Link } from 'react-router'
+import { connect } from 'react-redux'
 
 import { adjMat2Graph } from './flow_builder/render_matrix.js'
 import Box from '../components/box.js'
+import * as actions from '../actions/flow_builder.js'
 
-const mockAdj = [[1, 2], [3], [4], [4], []];
-const mockGraph = adjMat2Graph(mockAdj);
+const mockAdj = [[1, 2], [3], [4], [4], []]
+const mockGraph = adjMat2Graph(mockAdj)
 
-const flowBuilder = () =>
-  <div>
-    adjacency matrix <h3> {JSON.stringify(mockAdj)} </h3> yields graph:
-    <Box {...{graph: mockGraph}} />
-  </div>
+class flowBuilder extends Component {
+  render() {
+    const { graph } = this.props
+    return (
+      <div>
+        <Box {...{graph}} />
+        <Box {...{graph: mockGraph}} />
+      </div>
+    )
+  }
+  componentDidMount() {
+    const { pushNode } = this.props
+    pushNode(0)
+    pushNode(1)
+    pushNode(2)
+    pushNode(3)
+  }
+}
 
 flowBuilder.path = 'build'
 
-export default flowBuilder
+const mapStateToProps = state => {
+  return {
+    graph: adjMat2Graph(state.get('flow').toJS())
+  }
+}
+
+export default connect(mapStateToProps, actions)(flowBuilder)
