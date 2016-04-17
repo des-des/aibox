@@ -6,14 +6,16 @@ export default class box extends Component {
     return <div id = 'aibox'> </div>
   }
   componentDidUpdate() {
-    draw(this.props.graph);
+    const { graph, openBranches } = this.props
+    draw(graph, openBranches)
   }
   componentDidMount() {
-    draw(this.props.graph);
+    const { graph, openBranches } = this.props
+    draw(graph, openBranches)
   }
 }
 
-const width = 300;
+const width = 300
 
 // var getTestFlow = function() {
 //   state.pushNode(state.getOpenNodes());
@@ -34,7 +36,6 @@ const width = 300;
 //
 //   return state;
 // }
-
 
 // var drawFlow = function(graph) {
   // var svgWrapper = getSvgWrapper();
@@ -93,16 +94,17 @@ const createRenderData = logicData => {
   })
 }
 
-const draw = (renderData, width) => {
-    const svgContainer = drawContainer(width);
+const draw = (renderData, openBranches, width) => {
+    const svgContainer = drawContainer(width)
     // var renderData = createRenderData(logicData);
-    drawLinks(svgContainer, renderData);
-    drawNodes(svgContainer, renderData.nodes);
-    drawLabels(svgContainer, renderData.nodes);
+    drawLinks(svgContainer, renderData)
+    drawNodes(svgContainer, renderData.nodes)
+    drawLabels(svgContainer, renderData.nodes)
+    drawOpenBranches(svgContainer, openBranches)
 }
 
 const drawContainer = width => {
-  return d3.select("body").append("svg")
+  return d3.select("#aibox").append("svg")
     .attr("width", width)
     .attr("height", 1200)
 }
@@ -121,20 +123,20 @@ const drawLabels = (svgContainer, nodeData) => {
     .attr("font-size", "12px")
     .attr("fill", "white")
 }
+const createDiagonal = nodeData => d3.svg.diagonal()
+  .source(d => ({
+    "x" : transform.x(getNode(d[0], nodeData).getX()),
+    "y" : transform.y(getNode(d[0], nodeData).getY())
+  })).target(d => ({
+    "x" : transform.x(getNode(d[1], nodeData).getX()),
+    "y" : transform.y(getNode(d[1], nodeData).getY())
+  })).projection(d => ([d.x, d.y]))
 
-const drawLinks = (svgContainer, renderData) => {
-  const nodeData = renderData.nodes
-  const diagonal = d3.svg.diagonal()
-    .source(d => ({
-      "x" : transform.x(getNode(d[0], nodeData).getX()),
-      "y" : transform.y(getNode(d[0], nodeData).getY())
-    })).target(d => ({
-      "x" : transform.x(getNode(d[1], nodeData).getX()),
-      "y" : transform.y(getNode(d[1], nodeData).getY())
-    })).projection(d => ([d.x, d.y]))
+const drawLinks = (svgContainer, {nodes, links}) => {
+  const diagonal = createDiagonal(nodes)
 
   svgContainer.selectAll('line')
-    .data(renderData.links)
+    .data(links)
     .enter()
     .append('path')
     .attr("stroke-width", 2)
@@ -151,6 +153,11 @@ const drawNodes = (svgContainer, nodeData) => {
     .attr('cx', d => transform.x(d.getX()))
     .attr('cy', d => transform.y(d.getY()))
     .attr("fill", d => d.getType() !== "stub" ? "white" : "none")
+}
+//
+const drawOpenBranches = (svgContainer, openBranches) => {
+  console.log('openBranches')
+  console.log(openBranches)
 }
 
 const getNode = (id, nodeData) =>

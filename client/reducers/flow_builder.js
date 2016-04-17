@@ -32,18 +32,3 @@ export default createReducer(fromJS([[]]), {
       .set(newNodeId, List([]))
   }
 })
-
-var getOpenNodes = function() {
-  return state.reduce((openBranches, links, i) => (
-    openBranches.concat(links.length ? [] : [i])
-  ), [])
-}
-
-var initTestState = function() {
-  pushNode(getOpenNodes())
-  pushSplit(getOpenNodes())
-  pushNode(getOpenNodes()[0])
-  pushNode(getOpenNodes()[0])
-  pushMerge(getOpenNodes())
-  execActionCB()
-}

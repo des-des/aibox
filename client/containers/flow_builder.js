@@ -11,10 +11,10 @@ const mockGraph = adjMat2Graph(mockAdj)
 
 class flowBuilder extends Component {
   render() {
-    const { graph } = this.props
+    const { graph, openBranches } = this.props
     return (
       <div>
-        <Box {...{graph}} />
+        <Box {...{graph, openBranches}} />
       </div>
     )
   }
@@ -26,10 +26,14 @@ class flowBuilder extends Component {
   }
 }
 
-flowBuilder.path = 'build'
+const getOpenNodes = adj => adj
+  .reduce((openBranches, links, i) => (
+    openBranches.concat(links.length ? [] : [i])
+  ), [])
 
 const mapStateToProps = state => {
   return {
+    openBranches: getOpenNodes(state.get('flow').toJS()),
     graph: adjMat2Graph(state.get('flow').toJS())
   }
 }
