@@ -19,11 +19,10 @@ class flowBuilder extends Component {
     )
   }
   componentDidMount() {
-    const { pushNode, pushSplit } = this.props
+    const { pushNode, pushSplit, pushMerge } = this.props
     pushNode(0)
-    pushNode(1)
-    pushNode(2)
-    pushSplit(3)
+    pushSplit(1)
+    pushMerge(2, 3)
   }
 }
 
