@@ -1,22 +1,20 @@
 import { List, fromJS } from 'immutable'
 
+import createReducer from './create_reducer.js'
 import {
   PUSH_NODE
 } from '../action_types.js'
 
 const makeId = (id => () => id++)(1)
 
-export default (state = fromJS([[]]), action) => {
-  const { type } = action
-  switch (type) {
-    case PUSH_NODE:
-      const newNodeId = makeId()
-      return state
-        .set(newNodeId, List([]))
-        .set(action.target, List([newNodeId]))
+export default createReducer(fromJS([[]]), {
+  [PUSH_NODE]: (state, { target }) => {
+    const newNodeId = makeId()
+    return state
+      .set(newNodeId, List([]))
+      .set(target, List([newNodeId]))
   }
-  return state;
-}
+})
 
 var createFlowBuilder = function(actionCB) {
   var state = [[]];

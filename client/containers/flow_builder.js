@@ -15,7 +15,6 @@ class flowBuilder extends Component {
     return (
       <div>
         <Box {...{graph}} />
-        <Box {...{graph: mockGraph}} />
       </div>
     )
   }
