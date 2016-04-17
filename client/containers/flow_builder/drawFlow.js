@@ -1,10 +1,37 @@
 var width = 300;
 
-var testDraw = function() {
+// var getTestFlow = function() {
+//   state.pushNode(state.getOpenNodes());
+//   state.pushSplit(state.getOpenNodes());
+//   state.pushNode(state.getOpenNodes()[0]);
+//   state.pushNode(state.getOpenNodes()[0]);
+//   state.pushMerge(state.getOpenNodes());
+//
+//   console.log(executeFlow(-1, state.get(), [
+//     (x) => x*2,
+//     (x) => x < 0,
+//     (x) => x/2,
+//     (x) => x*2,
+//     (x) => x*2,
+//     (x) => x*2,
+//     (x) => x*2
+//   ]));
+//
+//   return state;
+// }
+
+
+var drawFlow = function() {
   var svgWrapper = getSvgWrapper();
-  var testFlow = mat2Graph(getTestFlow());
-  console.log('testflow2!');
-  draw(testFlow, width, svgWrapper);
+  var flow = createFlowBuilder(function(flowGraph) {
+    draw(flowGraph, width, svgWrapper);
+  });
+  flow.initTestState();
+  // var testFlow = mat2Graph(flow.get());
+  // var openNodes = flow.getOpenNodes();
+  // console.log(testFlow.nodes[6]);
+  // console.log('testflow2!');
+  // console.log();
 }
 
 var transform = {
@@ -132,4 +159,4 @@ var getNode = function(id, nodeData) {
   })[0];
 };
 
-testDraw();
+drawFlow();

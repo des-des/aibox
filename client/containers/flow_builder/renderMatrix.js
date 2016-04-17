@@ -154,11 +154,11 @@ const mat2Graph = (() => {
       nodes: graph.nodes.concat(emptyNodes.nodes),
       links: emptyNodes.links
     };
-    spreadX(graph.nodes); // not pure
+    spreadX(graph.nodes); // not pure...
     return graph;
   }
 })();
 
-if (module && module.exports) {
+if (typeof module !== 'undefined' && module.exports) {
   module.exports = mat2Graph;
 }
